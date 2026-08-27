@@ -79,6 +79,17 @@ class ibex_asm_program_gen extends riscv_asm_program_gen;
     gen_section(get_label("ecall_handler", hart), instr);
   endfunction
 
+  // Illegal instruction handler - for #1337 second item, keep default
+  // skip behavior (mepc+4; mret) for now. The first item (enabling
+  // read-only CSRs with correct R type) already prevents the timeout
+  // caused by illegal writes to those CSRs, so no special fail handling
+  // is needed here. This override is kept as a placeholder for future
+  // enhancement where unexpected illegal CSR accesses could be routed
+  // to test_fail.
+  virtual function void gen_illegal_instr_handler(int hart);
+    super.gen_illegal_instr_handler(hart);
+  endfunction
+
   virtual function void gen_program_header();
     // Override the mstatus_mprv config because there is no current way to randomize writing to
     // mstatus.mprv in riscv-dv (it's constrained by set_mstatus_mprv argument to have either
